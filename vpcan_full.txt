@@ -1,0 +1,1 @@
+wpscan --url http://<host> --api-token <token> --enumerate vp,vt,tt,cb,dbe,u --plugins-detection aggressive --force --random-user-agent

