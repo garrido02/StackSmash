@@ -14,7 +14,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # 2. Dar permissão de execução ao script principal
-if [ -f "stacksmash.py" ]; then
+if [ -f "stacksmash" ]; then
     chmod +x stacksmash
     # 3. Mover para /usr/local/bin
     cp stacksmash /usr/local/bin/
