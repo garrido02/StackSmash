@@ -1,0 +1,9 @@
+## Installation
+
+To install **STACKSMASH** on your system, run the following commands:
+
+```bash
+git clone [https://github.com/garrido02/Pentesting_Tools.git](https://github.com/garrido02/Pentesting_Tools.git)
+cd Pentesting_Tools
+sudo chmod +x install.sh
+sudo ./install.sh
