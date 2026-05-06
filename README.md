@@ -21,7 +21,7 @@ It streamlines the tedious, manual phases of exploit development by integrating 
 🧩 Cyclic Pattern Generation: Quickly create unique crash patterns using msf-pattern_create.  
 🎯 Automatic Offset Calculation: Identify the exact EIP overwrite distance using msf-pattern_offset.  
 🧪 Dummy Payload Testing: Generate "A*offset + BBBB" test strings to verify register control in GDB.  
-🐚 Dynamic Shellcode: Automated msfvenom integration with pre-configured filters for common bad characters (\x00\x0a\x0d\x20\x09).  
+🐚 Dynamic Shellcode: Automated msfvenom integration with pre-configured filters for common bad characters. 
 🔄 Smart Formatting: Automatically handles Little Endian byte conversion for memory addresses.  
 
 <br> 
