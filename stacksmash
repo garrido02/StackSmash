@@ -168,13 +168,13 @@ def main():
     
     # Aux functions
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--cyclic", type=int, metavar="LENGTH", help="Pattern generation of length l with msf-pattern_create.")
-    group.add_argument("--offset", type=str, metavar="VALUE", help="Discovers the EIP offset utilizing msf-pattern_offset.")
-    group.add_argument("--dummy", type=int, metavar="OFFSET", help="Cria um payload de teste (A*offset + B*4 + NOPs) para inspecionar no GDB.")    
+    group.add_argument("--cyclic", type=int, metavar="LENGTH", help="Pattern generation of length l.")
+    group.add_argument("--offset", type=str, metavar="VALUE", help="Discovers the EIP offset.")
+    group.add_argument("--dummy", type=int, metavar="OFFSET", help="Creates a test payload to identify possible return address values.")    
 
     # Payload arguments
     parser.add_argument("--padding", type=int, default=268, help="Number of 'A's to reach EIP  (Default: 268). See --offset & --cyclic")
-    parser.add_argument("--ret", type=str, default="0xbffffb04", help="The address we want to override EIP with (Default: 0xbffffb04)")
+    parser.add_argument("--ret", type=str, default="0xbffffb04", help="The address to override EIP with (Default: 0xbffffb04)")
     parser.add_argument("--cmd", type=str, default="/bin/sh", help="CMD to be executed  (Default: /bin/sh)")
 
     args = parser.parse_args()
