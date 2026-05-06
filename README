@@ -7,3 +7,4 @@ git clone [https://github.com/garrido02/Pentesting_Tools.git](https://github.com
 cd Pentesting_Tools
 sudo chmod +x install.sh
 sudo ./install.sh
+```
