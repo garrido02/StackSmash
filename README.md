@@ -82,7 +82,7 @@ stacksmash --padding <OFFSET> --ret <MEMORY_ADDRESS> --cmd "/bin/sh"
 | `--ret` | The return address to overwrite the EIP (Little Endian auto-converted). |
 | `--cmd` | The system command for the shellcode to execute (Default: `/bin/sh`). |
 | `--version` | Choose between python2 or python3 versions. | 
-| `--setuid` | Bypass smart and recent shells by forcing SUID |
+| `--setuid` | Bypass smart and recent shells by forcing SUID. |
 
 <br>  
 
